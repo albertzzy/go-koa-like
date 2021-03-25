@@ -1,17 +1,18 @@
 package lib
 
 import (
+	utils "go-koa-like/utils"
 	"net/http"
 )
 
-type MidFunc func(ctx *Context) interface{}
+// type MidFunc func(ctx *Context, next func() interface{}) interface{}
+type MidFunc func(ctx interface{}, next func() interface{}) interface{}
 type HandlerType func(req *http.Request, res http.ResponseWriter) interface{}
 
 type Application struct {
 	context Context
-	// server  http.Server
 
-	middleware []MidFunc
+	middleware []utils.FuncType
 }
 
 // create a new context
@@ -36,33 +37,33 @@ func (this *Application) Listen(port string, args ...interface{}) {
 }
 
 // add middle ware
-func (this *Application) Use(fn MidFunc) *Application {
+func (this *Application) Use(fn utils.FuncType) *Application {
 	this.middleware = append(this.middleware, fn)
 	return this
 }
 
-// http handler
+// implement the Handler interface
 func (this *Application) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	// compose fn
 	fn := utils.Compose(this.middleware)
-	// ctx := this.CreateContext(req, res)
-	// this.handleRequest(ctx, fn)
+	ctx := this.CreateContext(req, res)
+	this.handleRequest(ctx, fn)
 }
 
-func (this *Application) handleRequest(ctx *Context, fn MidFunc) interface{} {
+func (this *Application) handleRequest(ctx *Context, fn interface{}) interface{} {
 	// res := ctx.res
 	// res.statusCode = 404
-	// onerror := func(err) {
-	// 	this.context.OnError(err)
-	// }
-	// handleResponse := func() {
-	// 	// respond(ctx);
-	// }
+	onerror := func(err error) {
+		this.context.OnError(err, 404)
+	}
 	// onFinished(res, onerror);
-	// return fn(ctx).then(handleResponse).catch(onerror)
+	fn(ctx, func() {})
+
+	utils.Respond(ctx)
 }
 
 // new  application
-func New() {
+func New() *Application {
 
+	return &Application{}
 }

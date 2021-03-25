@@ -2,25 +2,38 @@ package main
 
 import (
 	"fmt"
+	"sync"
 )
 
+var ch = make(chan int, 1)
+
+func dispatchs(i int) {
+	<-ch
+	if i > 5 {
+		return
+	}
+	fmt.Println(i)
+	ch <- 1
+	go dispatchs(i + 1)
+}
+
 func main() {
-	/* var wg sync.WaitGroup
+	var wg sync.WaitGroup
 
 	// 开N个后台打印线程
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 5; i++ {
 		wg.Add(1)
 
 		go func(i int) {
 			fmt.Println(i)
 			wg.Done()
 		}(i)
+		wg.Wait()
 	}
 
 	// 等待N个后台线程完成
-	wg.Wait() */
 
-	// done := make(chan int, 10) // 带 10 个缓存
+	// done := make(chan int, 5) // 带 10 个缓存
 
 	// // 开N个后台打印线程
 	// for i := 0; i < cap(done); i++ {
@@ -36,23 +49,13 @@ func main() {
 	// 	fmt.Println(a)
 	// }
 
-	ch := make(chan int, 1)
 	// for i := 0; i < 5; i++ {
 	// 	// ch <- i
 	// 	go func(i int) {
 	// 		fmt.Println(i)
 	// 	}(i)
 	// }
-
-	func dispatchs(i int) {
-	// dispatchs := func(i int) {
-		if i > 5 {
-			return
-		}
-		fmt.Println(i)
-		go dispatchs(i + 1)
-	}
-
-	dispatchs(0)
+	// ch <- 1
+	// dispatchs(0)
 
 }
