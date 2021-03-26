@@ -11,13 +11,14 @@ import (
 	异步阻塞，非阻塞问题  node, go
 */
 
-type FuncType func(ctx interface{}, next func() interface{}) interface{}
+type NextType func() interface{}
+type MidType func(ctx interface{}, next NextType) interface{}
 
 var index = -1
 var wg sync.WaitGroup
 var ch = make(chan interface{})
 
-func dispatch(i int, num int, midware []FuncType, context interface{}, next FuncType) interface{} {
+func dispatch(i int, num int, midware []MidType, context interface{}, next NextType) interface{} {
 	if i <= index {
 		return errors.New("next() called multiple times")
 	}
@@ -37,8 +38,8 @@ func dispatch(i int, num int, midware []FuncType, context interface{}, next Func
 	return <-ch
 }
 
-func Compose(midware []FuncType) interface{} {
-	return func(context interface{}, next FuncType) interface{} {
+func Compose(midware []MidType) MidType {
+	return func(context interface{}, next NextType) interface{} {
 		num := len(midware)
 		return dispatch(0, num, midware, context, next)
 	}

@@ -1,21 +1,31 @@
 package lib
 
-type Response struct{}
+import "net/http"
 
-func (this *Response) header() interface{} {
-	return this.res.getHeaders()
+type Response struct {
+	res http.ResponseWriter
 }
 
-func (this *Request) status() string {
-	return this.res.statusCode
+func (this *Response) Status() string {
+	return this.res.Header().Get("statusCode")
 }
 
-func (this *Response) set(args ...interface{}) {
+func (this *Response) Set(args ...interface{}) {
 	if len(args) == 2 {
-		this.res.setHeader(args[0], args[1])
+		arg0, ok0 := args[0].(string)
+		arg1, ok1 := args[1].(string)
+		if !ok0 || !ok1 {
+			// todo - ctx.onError
+			return
+		}
+		this.res.Header().Set(arg0, arg1)
 	} else {
 		for key := range args {
-			this.set(key, args[key])
+			this.Set(key, args[key])
 		}
 	}
+}
+
+func (this *Response) Get(field string) string {
+	return this.res.Header().Get(field)
 }
