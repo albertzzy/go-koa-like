@@ -1,2 +1,2 @@
-http request 为啥是 *
-http responsewrite 为啥不是 *
+## a go version of koa
+todo
