@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"sync"
+	// . "go-koa-like/lib"
+	// . "go-koa-like/types"
 )
 
 var ch = make(chan int, 1)
@@ -18,7 +19,7 @@ func dispatchs(i int) {
 }
 
 func main() {
-	var wg sync.WaitGroup
+	/* var wg sync.WaitGroup
 
 	// 开N个后台打印线程
 	for i := 0; i < 5; i++ {
@@ -29,7 +30,7 @@ func main() {
 			wg.Done()
 		}(i)
 		wg.Wait()
-	}
+	} */
 
 	// 等待N个后台线程完成
 
@@ -57,5 +58,12 @@ func main() {
 	// }
 	// ch <- 1
 	// dispatchs(0)
+
+	/* app := New()
+	app.Use(func(ctx *Context, next NextType) interface{} {
+		ctx.body = "Hello world"
+		return nil
+	})
+	app.Listen(":9001") */
 
 }

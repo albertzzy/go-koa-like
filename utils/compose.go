@@ -3,6 +3,7 @@ package utils
 import (
 	"errors"
 	// . "go-koa-like/lib"
+	. "go-koa-like/types"
 	"sync"
 )
 
@@ -12,8 +13,8 @@ import (
 	异步阻塞，非阻塞问题  node, go
 */
 
-type NextType func() interface{}
-type MidType func(ctx interface{}, next NextType) interface{}
+// type NextType func() interface{}
+// type MidType func(ctx interface{}, next NextType) interface{}
 
 var index = -1
 var wg sync.WaitGroup
@@ -26,7 +27,10 @@ func dispatch(i int, num int, midware []MidType, context interface{}, next NextT
 	index = i
 	fn := midware[i]
 	if i == num {
-		fn = next
+		//fn is MidType, next is NextType， so wrap it
+		fn = func(ctx interface{}, nextFunc NextType) interface{} {
+			return next()
+		}
 	}
 	wg.Add(1)
 	go fn(context, func() interface{} {

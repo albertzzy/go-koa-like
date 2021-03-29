@@ -2,6 +2,7 @@ package lib
 
 import (
 	"encoding/json"
+	. "go-koa-like/types"
 	utils "go-koa-like/utils"
 	"net/http"
 	"strconv"
@@ -14,7 +15,7 @@ type HandlerType func(req *http.Request, res http.ResponseWriter) interface{}
 type Application struct {
 	context Context
 
-	middleware []utils.MidType
+	middleware []MidType
 }
 
 // create a new context
@@ -39,7 +40,7 @@ func (this *Application) CreateContext(req *http.Request, res http.ResponseWrite
 }
 
 // init http server and listen
-func (this *Application) Listen(port string, args ...interface{}) {
+func (this *Application) Listen(port string) {
 	err := http.ListenAndServe(port, this)
 	if err != nil {
 		this.context.OnError(err, 500)
@@ -47,7 +48,7 @@ func (this *Application) Listen(port string, args ...interface{}) {
 }
 
 // add middle ware
-func (this *Application) Use(fn utils.MidType) *Application {
+func (this *Application) Use(fn MidType) *Application {
 	this.middleware = append(this.middleware, fn)
 	return this
 }
@@ -60,7 +61,7 @@ func (this *Application) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	this.handleRequest(ctx, fn)
 }
 
-func (this *Application) handleRequest(ctx *Context, fn utils.MidType) {
+func (this *Application) handleRequest(ctx *Context, fn MidType) {
 	// res := ctx.res
 	// res.statusCode = 404
 	// onerror := func(err error) {
