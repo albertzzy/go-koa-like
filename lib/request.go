@@ -6,15 +6,19 @@ import (
 )
 
 type Request struct {
-	req *http.Request
+	/*
+		have to be uppercase:
+		https://stackoverflow.com/questions/37780520/unknown-field-in-struct-literal/37780565
+	*/
+	Req *http.Request
 }
 
 func (this *Request) Header() http.Header {
-	return this.req.Header
+	return this.Req.Header
 }
 
 func (this *Request) Get(field string) string {
-	req := this.req
+	req := this.Req
 	if strings.ToLower(field) == "referer" || strings.ToLower(field) == "refererr" {
 		return req.Header.Get("referer")
 	}

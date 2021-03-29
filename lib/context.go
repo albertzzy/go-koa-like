@@ -7,15 +7,15 @@ import (
 type Context struct {
 	http.CookieJar
 
-	res      http.ResponseWriter
-	req      *http.Request
-	request  *Request
-	response *Response
-	body     interface{}
+	Res      http.ResponseWriter
+	Req      *http.Request
+	Request  *Request
+	Response *Response
+	Body     interface{}
 }
 
 func (this *Context) OnError(err error, code int) {
-	http.Error(this.res, err.Error(), code)
+	http.Error(this.Res, err.Error(), code)
 }
 
 func (this *Context) Throw() {

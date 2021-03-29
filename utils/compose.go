@@ -4,7 +4,7 @@ import (
 	"errors"
 	. "go-koa-like/lib"
 
-	// . "go-koa-like/types"
+	. "go-koa-like/types"
 	"sync"
 )
 
@@ -14,8 +14,8 @@ import (
 	异步阻塞，非阻塞问题  node, go
 */
 
-type NextType func() interface{}
-type MidType func(ctx *Context, next NextType) interface{}
+// type NextType func() interface{}
+// type MidType func(ctx *Context, next NextType) interface{}
 
 var index = -1
 var wg sync.WaitGroup

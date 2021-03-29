@@ -2,15 +2,15 @@ package app
 
 import (
 	"encoding/json"
-	// . "go-koa-like/types"
 	. "go-koa-like/lib"
+	. "go-koa-like/types"
 	utils "go-koa-like/utils"
 	"net/http"
 	"strconv"
 )
 
-type NextType func() interface{}
-type MidType func(ctx *Context, next NextType) interface{}
+// type NextType func() interface{}
+// type MidType func(ctx *Context, next NextType) interface{}
 type HandlerType func(req *http.Request, res http.ResponseWriter) interface{}
 
 type Application struct {
@@ -22,18 +22,18 @@ type Application struct {
 // create a new context
 func (this *Application) CreateContext(req *http.Request, res http.ResponseWriter) *Context {
 	request := &Request{
-		req: req,
+		Req: req,
 	}
 
 	response := &Response{
-		res: res,
+		Res: res,
 	}
 
 	ctx := &Context{
-		res:      res,
-		req:      req,
-		request:  request,
-		response: response,
+		Res:      res,
+		Req:      req,
+		Request:  request,
+		Response: response,
 	}
 	// ctx.app = this
 
@@ -82,10 +82,10 @@ func New() *Application {
 
 // handle reponse
 func Respond(ctx *Context) interface{} {
-	res := ctx.res
-	body := ctx.body
+	res := ctx.Res
+	body := ctx.Body
 
-	statusCode, err := strconv.Atoi(ctx.response.Status())
+	statusCode, err := strconv.Atoi(ctx.Response.Status())
 	if err != nil {
 		// todo - onerror
 		return ctx

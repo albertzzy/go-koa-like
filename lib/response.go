@@ -3,11 +3,11 @@ package lib
 import "net/http"
 
 type Response struct {
-	res http.ResponseWriter
+	Res http.ResponseWriter
 }
 
 func (this *Response) Status() string {
-	return this.res.Header().Get("statusCode")
+	return this.Res.Header().Get("statusCode")
 }
 
 func (this *Response) Set(args ...interface{}) {
@@ -18,7 +18,7 @@ func (this *Response) Set(args ...interface{}) {
 			// todo - ctx.onError
 			return
 		}
-		this.res.Header().Set(arg0, arg1)
+		this.Res.Header().Set(arg0, arg1)
 	} else {
 		for key := range args {
 			this.Set(key, args[key])
@@ -27,5 +27,5 @@ func (this *Response) Set(args ...interface{}) {
 }
 
 func (this *Response) Get(field string) string {
-	return this.res.Header().Get(field)
+	return this.Res.Header().Get(field)
 }
