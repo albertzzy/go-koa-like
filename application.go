@@ -1,19 +1,20 @@
-package lib
+package app
 
 import (
 	"encoding/json"
-	. "go-koa-like/types"
+	// . "go-koa-like/types"
+	. "go-koa-like/lib"
 	utils "go-koa-like/utils"
 	"net/http"
 	"strconv"
 )
 
-// type MidFunc func(ctx *Context, next func() interface{}) interface{}
-// type MidFunc func(ctx interface{}, next func() interface{}) interface{}
+type NextType func() interface{}
+type MidType func(ctx *Context, next NextType) interface{}
 type HandlerType func(req *http.Request, res http.ResponseWriter) interface{}
 
 type Application struct {
-	context Context
+	context *Context
 
 	middleware []MidType
 }
