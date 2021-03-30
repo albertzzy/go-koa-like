@@ -7,7 +7,8 @@ type Response struct {
 }
 
 func (this *Response) Status() string {
-	return this.Res.Header().Get("statusCode")
+	// todo
+	return "200" //this.Res.Header().Get("statusCode")
 }
 
 func (this *Response) Set(args ...interface{}) {

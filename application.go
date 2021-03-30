@@ -5,6 +5,7 @@ import (
 	. "go-koa-like/lib"
 	. "go-koa-like/types"
 	utils "go-koa-like/utils"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -86,6 +87,7 @@ func Respond(ctx *Context) interface{} {
 	body := ctx.Body
 
 	statusCode, err := strconv.Atoi(ctx.Response.Status())
+	log.Println("====handlerequest inner=====", statusCode, err)
 	if err != nil {
 		// todo - onerror
 		return ctx
@@ -95,6 +97,9 @@ func Respond(ctx *Context) interface{} {
 
 	// body: string | json
 	resBody, ok := body.(string)
+
+	log.Println(resBody, ok)
+
 	if ok {
 		res.Write([]byte(resBody))
 	} else {

@@ -2,20 +2,27 @@ package main
 
 import (
 	"fmt"
-	// . "go-koa-like/lib"
-	// . "go-koa-like/types"
+	App "go-koa-like"
+	. "go-koa-like/lib"
+	. "go-koa-like/types"
+	"sync"
 )
 
-var ch = make(chan int, 1)
+var ch = make(chan interface{}, 5)
+var wg sync.WaitGroup
 
 func dispatchs(i int) {
-	<-ch
 	if i > 5 {
 		return
 	}
 	fmt.Println(i)
-	ch <- 1
-	go dispatchs(i + 1)
+	wg.Add(1)
+	go func(i int) {
+		dispatchs(i + 1)
+		wg.Done()
+		// ch <- res
+	}(i)
+	// return <-ch
 }
 
 func main() {
@@ -30,8 +37,8 @@ func main() {
 			wg.Done()
 		}(i)
 		wg.Wait()
-	} */
-
+	}
+	*/
 	// 等待N个后台线程完成
 
 	// done := make(chan int, 5) // 带 10 个缓存
@@ -57,13 +64,18 @@ func main() {
 	// 	}(i)
 	// }
 	// ch <- 1
-	// dispatchs(0)
 
-	/* app := New()
+	app := App.New()
 	app.Use(func(ctx *Context, next NextType) interface{} {
-		ctx.body = "Hello world"
-		return nil
+		ctx.Body = "Hello world"
+		return next()
 	})
-	app.Listen(":9001") */
+
+	app.Use(func(ctx *Context, next NextType) interface{} {
+		dispatchs(0)
+		wg.Wait()
+		return next()
+	})
+	app.Listen(":9001")
 
 }
