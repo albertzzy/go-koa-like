@@ -56,6 +56,7 @@ func (this *Application) Use(fn MidType) *Application {
 }
 
 // implement the Handler interface
+// !!!servehttp执行了两次，一次是 / 一次是 /favicon.ico
 func (this *Application) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	// compose fn
 	fn := utils.Compose(this.middleware)
@@ -70,6 +71,7 @@ func (this *Application) handleRequest(ctx *Context, fn MidType) {
 	// 	this.context.OnError(err, 404)
 	// }
 	// onFinished(res, onerror);
+
 	fn(ctx, func() interface{} {
 		return Respond(ctx)
 	})
@@ -87,7 +89,7 @@ func Respond(ctx *Context) interface{} {
 	body := ctx.Body
 
 	statusCode, err := strconv.Atoi(ctx.Response.Status())
-	log.Println("====handlerequest inner=====", statusCode, err)
+	log.Println("====handlerequest=====", statusCode, err)
 	if err != nil {
 		// todo - onerror
 		return ctx

@@ -3,10 +3,8 @@ package utils
 import (
 	"errors"
 	. "go-koa-like/lib"
-	"log"
 
 	. "go-koa-like/types"
-	"sync"
 )
 
 /*
@@ -16,10 +14,9 @@ import (
 	中间件同步执行
 */
 
-// type NextType func() interface{}
-// type MidType func(ctx *Context, next NextType) interface{}
 var index = -1
-var wg sync.WaitGroup
+
+// var wg sync.WaitGroup
 
 // var ch = make(chan interface{}, 100)
 
@@ -28,7 +25,7 @@ func Compose(midware []MidType) MidType {
 		index = -1
 		num := len(midware)
 		res := dispatch(0, num, midware, context, next)
-		wg.Wait()
+		// wg.Wait()
 		return res
 	}
 }
@@ -37,19 +34,16 @@ func dispatch(i int, num int, midware []MidType, context *Context, next NextType
 	if i <= index {
 		return errors.New("next() called multiple times")
 	}
+
 	index = i
 
 	var fn MidType
 	if i < num {
 		fn = midware[i]
 	} else if i == num {
-		log.Println("==dispatch last====", context.Body)
-		//fn is MidType, next is NextType， so wrap it
-		fn = func(ctx *Context, nextFunc NextType) interface{} {
-			return next()
-		}
+		return next()
 	} else {
-		fn = func(ctx *Context, f NextType) interface{} { return nil }
+		return nil
 	}
 
 	/*
@@ -69,8 +63,7 @@ func dispatch(i int, num int, midware []MidType, context *Context, next NextType
 
 	// syncronuous
 	return fn(context, func() interface{} {
-		res := dispatch(i+1, num, midware, context, next)
-		return res
+		return dispatch(i+1, num, midware, context, next)
 	})
 
 }

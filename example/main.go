@@ -68,7 +68,8 @@ func main() {
 	app := App.New()
 	app.Use(func(ctx *Context, next NextType) interface{} {
 		ctx.Body = "Hello world"
-		return next()
+		next()
+		return nil
 	})
 
 	app.Use(func(ctx *Context, next NextType) interface{} {
