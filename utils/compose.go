@@ -17,7 +17,6 @@ import (
 var index = -1
 
 // var wg sync.WaitGroup
-
 // var ch = make(chan interface{}, 100)
 
 func Compose(midware []MidType) MidType {
@@ -41,6 +40,7 @@ func dispatch(i int, num int, midware []MidType, context *Context, next NextType
 	if i < num {
 		fn = midware[i]
 	} else if i == num {
+		// last Response(ctx)
 		return next()
 	} else {
 		return nil
