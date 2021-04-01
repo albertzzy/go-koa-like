@@ -15,8 +15,7 @@ import (
 type HandlerType func(req *http.Request, res http.ResponseWriter) interface{}
 
 type Application struct {
-	context *Context
-
+	context    *Context
 	middleware []MidType
 }
 
