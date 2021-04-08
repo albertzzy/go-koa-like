@@ -1,14 +1,22 @@
 package lib
 
-import "net/http"
+import (
+	"net/http"
+	"strconv"
+)
 
 type Response struct {
-	Res http.ResponseWriter
+	Res    http.ResponseWriter
+	values map[string]interface{}
 }
 
 func (this *Response) Status() string {
-	// todo
-	return "200" //this.Res.Header().Get("statusCode")
+	code, ok := this.values["statusCode"].(int)
+	if !ok {
+		//
+		return "500"
+	}
+	return strconv.Itoa(code)
 }
 
 func (this *Response) Set(args ...interface{}) {
@@ -19,12 +27,22 @@ func (this *Response) Set(args ...interface{}) {
 			// todo - ctx.onError
 			return
 		}
+		this.values[arg0] = arg1
 		this.Res.Header().Set(arg0, arg1)
 	} else {
 		for key := range args {
 			this.Set(key, args[key])
 		}
 	}
+}
+
+func (this *Response) StatusCode(code int) {
+	this.values["statusCode"] = code
+	this.Res.WriteHeader(code)
+}
+
+func (this *Response) NotFound() {
+	this.StatusCode(http.StatusNotFound)
 }
 
 func (this *Response) Get(field string) string {

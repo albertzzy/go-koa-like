@@ -22,7 +22,7 @@ func (this *Context) OnError(err error, code int) {
 cookie: refer to iris
 */
 var (
-	CookieExpireDelete = time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC)
+	CookieExpireDelete = time.Date(2021, time.April, 4, 7, 0, 0, 0, time.UTC)
 )
 
 func (this *Context) SetCookie(c *http.Cookie) {
